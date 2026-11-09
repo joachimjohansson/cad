@@ -1,0 +1,333 @@
+---
+/**
+ * Interaktiv 3D-modell med Googles <model-viewer>.
+ *
+ * Modellen och skriptet laddas aldrig vid första visningen. Först syns bara
+ * posterbilden och en knapp. Skriptet hämtas med dynamic import() när
+ * besökaren trycker på knappen, eller när elementet kommer i bild på en stor
+ * skärm (aldrig vid dataspar, reducerad rörelse eller smala skärmar).
+ */
+import { Image, getImage } from 'astro:assets';
+import type { Sprak } from '../config/sajt';
+import { t } from '../i18n/ord';
+import type { Projekt } from '../lib/projekt';
+
+interface Props {
+  modell: NonNullable<Projekt['modell']>;
+  sprak: Sprak;
+}
+const { modell, sprak } = Astro.props;
+
+const posterbild = await getImage({ src: modell.poster, width: 1600, format: 'webp' });
+const mbTal = modell.storlek / 1024 / 1024;
+const mb = mbTal < 0.1 ? '<0.1' : mbTal.toFixed(1);
+const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
+---
+<div
+  class="vs-modell"
+  data-vs-modell
+  data-src={modell.src}
+  data-poster={posterbild.src}
+  data-alt={modell.alt[sprak]}
+  data-text-hjalp={t(sprak, 'modellHjalp')}
+  data-text-ar={t(sprak, 'visaIAR')}
+  data-text-laddar={t(sprak, 'laddar3D')}
+  data-text-fel={t(sprak, 'modellFel')}
+>
+  <Image
+    class="vs-modell__poster"
+    src={modell.poster}
+    alt={modell.alt[sprak]}
+    widths={[480, 800, 1200, 1600]}
+    sizes="(min-width: 1200px) 1168px, 94vw"
+    format="webp"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="vs-modell__start">
+    <button type="button" class="vs-modell__knapp" data-vs-modell-knapp>
+      <span>{t(sprak, 'visa3D')}</span>
+      <span class="vs-modell__storlek">{storlekText}{"\u00a0"}MB</span>
+    </button>
+  </div>
+  <p class="vs-modell__status" role="status" aria-live="polite" data-vs-modell-status></p>
+</div>
+
+<style is:global>
+  .vs-modell {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    background: var(--yta-3);
+    overflow: hidden;
+  }
+  @media (max-width: 600px) {
+    .vs-modell {
+      aspect-ratio: 1 / 1;
+    }
+  }
+  .vs-modell__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity var(--rorelse) var(--kurva);
+  }
+  .vs-modell[data-lage='klar'] .vs-modell__poster {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .vs-modell__start {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    justify-content: flex-start;
+    padding: var(--mellanrum-2);
+  }
+  .vs-modell[data-lage='laddar'] .vs-modell__start,
+  .vs-modell[data-lage='klar'] .vs-modell__start {
+    display: none;
+  }
+  .vs-modell__knapp {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.75em;
+    min-height: 44px;
+    padding: 0.6rem 1.1rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--yta-2);
+    border: 1px solid var(--linje-stark);
+    border-radius: var(--radie-liten);
+    cursor: pointer;
+    transition:
+      background var(--rorelse) var(--kurva),
+      border-color var(--rorelse) var(--kurva);
+  }
+  .vs-modell__knapp:hover {
+    border-color: var(--accent);
+    background: var(--yta-3);
+  }
+  .vs-modell__storlek {
+    font-family: var(--detalj-font);
+    font-size: var(--steg--1);
+    font-weight: 400;
+    color: var(--text-svag);
+  }
+  .vs-modell__status {
+    position: absolute;
+    left: var(--mellanrum-2);
+    bottom: var(--mellanrum-2);
+    margin: 0;
+    max-width: calc(100% - 2 * var(--mellanrum-2));
+    padding: 0.25rem 0.6rem;
+    font-size: var(--steg--1);
+    color: var(--text-svag);
+    background: var(--yta-2);
+    border-radius: var(--radie-liten);
+  }
+  .vs-modell__status:empty {
+    display: none;
+  }
+  .vs-modell__status[data-fel] {
+    color: var(--text);
+    border: 1px solid var(--accent);
+  }
+  .vs-modell model-viewer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    --poster-color: transparent;
+    --progress-bar-color: var(--accent);
+    --progress-bar-height: 4px;
+  }
+  .vs-modell__framsteg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: var(--linje);
+    transition: opacity var(--rorelse) var(--kurva);
+  }
+  .vs-modell__framsteg.vs-dold {
+    opacity: 0;
+  }
+  .vs-modell__framsteg > div {
+    height: 100%;
+    width: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--rorelse) var(--kurva);
+  }
+  .vs-modell__ar {
+    position: absolute;
+    right: var(--mellanrum-2);
+    bottom: var(--mellanrum-2);
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--yta-2);
+    border: 1px solid var(--linje-stark);
+    border-radius: var(--radie-liten);
+    cursor: pointer;
+  }
+  .vs-modell__ar:hover {
+    border-color: var(--accent);
+  }
+  .vs-modell__hjalp {
+    position: absolute;
+    left: var(--mellanrum-2);
+    bottom: var(--mellanrum-2);
+    margin: 0;
+    max-width: calc(100% - 9rem);
+    padding: 0.25rem 0.6rem;
+    font-size: var(--steg--1);
+    color: var(--text-svag);
+    background: var(--yta-2);
+    border-radius: var(--radie-liten);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vs-modell__poster,
+    .vs-modell__framsteg,
+    .vs-modell__framsteg > div {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const SMAL_SKARM = '(max-width: 700px)';
+  const REDUCERAD_ROERELSE = '(prefers-reduced-motion: reduce)';
+
+  // Avkodaren för meshopt-komprimerade modeller ligger på vår egen sajt (public/vendor), inte på en CDN.
+  const meshoptAvkodare = '/vendor/meshopt_decoder.js';
+
+  let skriptLaddning: Promise<unknown> | undefined;
+  /** Hämtar <model-viewer> först när den behövs. */
+  function hamtaModelViewer() {
+    skriptLaddning ??= import('@google/model-viewer').then((modul) => {
+      (modul.ModelViewerElement as unknown as { meshoptDecoderLocation: string }).meshoptDecoderLocation = meshoptAvkodare;
+    });
+    return skriptLaddning;
+  }
+
+  function sparar(): boolean {
+    const anslutning = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    return Boolean(anslutning?.saveData);
+  }
+
+  function fAutoladdaFarOk(): boolean {
+    return !sparar() && !matchMedia(REDUCERAD_ROERELSE).matches && !matchMedia(SMAL_SKARM).matches;
+  }
+
+  function starta(rot: HTMLElement, flytta: boolean) {
+    if (rot.dataset.lage) return; // redan igång
+    rot.dataset.lage = 'laddar';
+    const status = rot.querySelector<HTMLElement>('[data-vs-modell-status]');
+    if (status) {
+      status.removeAttribute('data-fel');
+      status.textContent = rot.dataset.textLaddar ?? '';
+    }
+
+    hamtaModelViewer()
+      .then(() => {
+        const mv = document.createElement('model-viewer') as HTMLElement & Record<string, unknown>;
+        mv.setAttribute('src', rot.dataset.src ?? '');
+        mv.setAttribute('poster', rot.dataset.poster ?? '');
+        mv.setAttribute('alt', rot.dataset.alt ?? '');
+        mv.setAttribute('camera-controls', '');
+        mv.setAttribute('touch-action', 'pan-y');
+        mv.setAttribute('ar', '');
+        mv.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
+        mv.setAttribute('shadow-intensity', '1');
+        mv.setAttribute('interaction-prompt', 'auto');
+        mv.setAttribute('loading', 'eager');
+        mv.setAttribute('reveal', 'auto');
+        if (!matchMedia(REDUCERAD_ROERELSE).matches) mv.setAttribute('auto-rotate', '');
+        if (matchMedia(REDUCERAD_ROERELSE).matches) mv.setAttribute('interaction-prompt', 'none');
+
+        const framsteg = document.createElement('div');
+        framsteg.className = 'vs-modell__framsteg';
+        framsteg.slot = 'progress-bar';
+        const stapel = document.createElement('div');
+        framsteg.append(stapel);
+        mv.append(framsteg);
+
+        const arKnapp = document.createElement('button');
+        arKnapp.type = 'button';
+        arKnapp.className = 'vs-modell__ar';
+        arKnapp.slot = 'ar-button';
+        arKnapp.textContent = rot.dataset.textAr ?? '';
+        mv.append(arKnapp);
+
+        mv.addEventListener('progress', (h) => {
+          const detalj = (h as CustomEvent<{ totalProgress: number }>).detail;
+          stapel.style.transform = `scaleX(${detalj.totalProgress})`;
+          framsteg.classList.toggle('vs-dold', detalj.totalProgress >= 1);
+        });
+        mv.addEventListener('load', () => {
+          rot.dataset.lage = 'klar';
+          if (status) status.remove();
+          const hjalp = document.createElement('p');
+          hjalp.className = 'vs-modell__hjalp';
+          hjalp.textContent = rot.dataset.textHjalp ?? '';
+          rot.append(hjalp);
+          setTimeout(() => hjalp.remove(), 6000);
+        });
+        mv.addEventListener('error', () => fel(rot, mv));
+
+        rot.append(mv);
+        if (flytta) mv.focus({ preventScroll: true });
+      })
+      .catch(() => fel(rot));
+  }
+
+  function fel(rot: HTMLElement, mv?: Element) {
+    mv?.remove();
+    rot.dataset.lage = '';
+    delete rot.dataset.lage;
+    const status = rot.querySelector<HTMLElement>('[data-vs-modell-status]');
+    if (status) {
+      status.setAttribute('data-fel', '');
+      status.textContent = rot.dataset.textFel ?? '';
+    }
+  }
+
+  function initiera() {
+    const rotter = document.querySelectorAll<HTMLElement>('[data-vs-modell]');
+    rotter.forEach((rot) => {
+      rot.querySelector('[data-vs-modell-knapp]')?.addEventListener('click', () => starta(rot, true));
+    });
+    if (!('IntersectionObserver' in window)) return;
+    if (!fAutoladdaFarOk()) return;
+
+    const iBild = new IntersectionObserver(
+      (poster, observator) => {
+        for (const post of poster) {
+          if (!post.isIntersecting) continue;
+          const rot = post.target as HTMLElement;
+          observator.unobserve(rot);
+          // Vänta tills sidan är klar så att 3D aldrig konkurrerar med första visningen.
+          const gor = () => fAutoladdaFarOk() && starta(rot, false);
+          if ('requestIdleCallback' in window) requestIdleCallback(gor, { timeout: 2500 });
+          else setTimeout(gor, 1200);
+        }
+      },
+      { threshold: 0.4 },
+    );
+    const bevaka = () => rotter.forEach((rot) => iBild.observe(rot));
+    if (document.readyState === 'complete') bevaka();
+    else addEventListener('load', bevaka, { once: true });
+  }
+
+  initiera();
+</script>

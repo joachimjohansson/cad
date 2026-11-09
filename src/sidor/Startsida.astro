@@ -1,0 +1,42 @@
+---
+import Ram from '../layouts/Ram.astro';
+import Dorr from '../components/Dorr.astro';
+import Projektkort from '../components/Projektkort.astro';
+import { sajt, spar, type Sprak } from '../config/sajt';
+import { allaProjekt } from '../lib/projekt';
+
+interface Props {
+  sprak: Sprak;
+}
+const { sprak } = Astro.props;
+const projekt = await allaProjekt();
+const utvalda = projekt.filter((p) => p.utvald).slice(0, 6);
+const visade = utvalda.length > 0 ? utvalda : projekt.slice(0, 6);
+---
+<Ram sprak={sprak} tema="start" titel={sajt.namn} beskrivning={`${sajt.person}. ${sajt.roll[sprak]}. ${sajt.hjalte[sprak]}`} vag="/">
+  <section class="vs-hjalte">
+    <h1>{sajt.person}</h1>
+    <p class="ingress">{sajt.roll[sprak]}. {sajt.hjalte[sprak]}</p>
+  </section>
+
+  <section class="stack" aria-label={sprak === 'sv' ? 'Spår' : 'Tracks'}>
+    <ul class="vs-dorrar">
+      {spar.map((s) => <li><Dorr spar={s} sprak={sprak} /></li>)}
+    </ul>
+  </section>
+
+  {
+    visade.length > 0 && (
+      <section class="stack">
+        <h2>{sprak === 'sv' ? 'Utvalda projekt' : 'Selected work'}</h2>
+        <ul class="vs-kortlista">
+          {visade.map((p) => (
+            <li>
+              <Projektkort projekt={p} sprak={sprak} egetTema rubrikniva={3} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Ram>

@@ -1,0 +1,20 @@
+{
+  "@context": ["http://www.w3.org/ns/odrl.jsonld", { "tdm": "http://www.w3.org/ns/tdmrep#" }],
+  "@type": "Offer",
+  "uid": "https://vickyvariety.com/.well-known/tdm-policy.json",
+  "profile": "http://www.w3.org/ns/tdmrep",
+  "assigner": {
+    "uid": "https://vickyvariety.com/om/",
+    "vcard:fn": "Victoria Wendelid",
+    "vcard:hasURL": "https://vickyvariety.com/om/"
+  },
+  "permission": [],
+  "prohibition": [
+    {
+      "target": "https://vickyvariety.com/",
+      "action": "tdm:mine",
+      "duty": [{ "action": "obtainConsent" }]
+    }
+  ],
+  "comment": "Text and data mining, including training of AI models, is not permitted without written consent. Licensing requests: see https://vickyvariety.com/om/."
+}

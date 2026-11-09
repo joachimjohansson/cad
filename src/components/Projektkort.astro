@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import type { Sprak } from '../config/sajt';
+import type { Projekt } from '../lib/projekt';
+import { lank } from '../i18n/ord';
+import Meta from './Meta.astro';
+
+interface Props {
+  projekt: Projekt;
+  sprak: Sprak;
+  /** Sätt temat på kortet, till exempel på startsidan där spåren blandas. */
+  egetTema?: boolean;
+  /** Första korten på sidan laddas direkt, resten när de närmar sig. */
+  tidig?: boolean;
+  rubrikniva?: 2 | 3;
+}
+const { projekt, sprak, egetTema = false, tidig = false, rubrikniva = 2 } = Astro.props;
+const Rubrik = `h${rubrikniva}` as 'h2' | 'h3';
+---
+<article class="vs-kort" data-spar={egetTema ? projekt.spar.tema : undefined}>
+  <div class="vs-kort__bild" data-matt={String(projekt.ar)}>
+    <Image
+      src={projekt.omslag}
+      alt={projekt.omslagAlt[sprak]}
+      widths={[360, 560, 760]}
+      sizes="(min-width: 1200px) 380px, (min-width: 700px) 45vw, 92vw"
+      format="webp"
+      loading={tidig ? 'eager' : 'lazy'}
+      fetchpriority={tidig ? 'high' : 'auto'}
+    />
+  </div>
+  <div class="vs-kort__text">
+    <Rubrik class="vs-kort__titel">
+      <a href={lank(sprak, `/${projekt.spar.slug}/${projekt.id}/`)}>{projekt.titel[sprak]}</a>
+    </Rubrik>
+    <p class="vs-kort__besk">{projekt.beskrivning[sprak]}</p>
+    <Meta projekt={projekt} sprak={sprak} />
+  </div>
+</article>

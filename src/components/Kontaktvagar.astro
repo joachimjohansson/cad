@@ -1,0 +1,53 @@
+---
+import { kontakt, type Sprak } from '../config/sajt';
+import { t } from '../i18n/ord';
+
+interface Props {
+  sprak: Sprak;
+}
+const { sprak } = Astro.props;
+const lankar = [
+  ['LinkedIn', kontakt.linkedin],
+  ['ArtStation', kontakt.artstation],
+  ['Instagram', kontakt.instagram],
+  ['Behance', kontakt.behance],
+  ['Sketchfab', kontakt.sketchfab],
+].filter(([, url]) => url);
+---
+{
+  (kontakt.epost || lankar.length > 0) && (
+    <ul class="vs-kontakt">
+      {kontakt.epost && (
+        <li class="vs-epost">
+          <a href={`mailto:${kontakt.epost}`}>
+            <code>{kontakt.epost}</code>
+          </a>
+          <button class="knapp vs-kopiera" type="button" data-kopiera={kontakt.epost} data-klar={t(sprak, 'kopierad')}>
+            {t(sprak, 'kopiera')}
+          </button>
+        </li>
+      )}
+      {lankar.map(([namn, url]) => (
+        <li>
+          <a href={url} rel="me noopener">
+            {namn}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+<script>
+  for (const knapp of document.querySelectorAll<HTMLButtonElement>('.vs-kopiera')) {
+    knapp.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(knapp.dataset.kopiera ?? '');
+        const text = knapp.textContent;
+        knapp.textContent = knapp.dataset.klar ?? text;
+        setTimeout(() => (knapp.textContent = text), 2000);
+      } catch {
+        /* Kopiering stöds inte, adressen går fortfarande att markera. */
+      }
+    });
+  }
+</script>

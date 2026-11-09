@@ -20,3 +20,20 @@ build/
 
 # Loggar
 *.log
+
+# Astro
+.astro/
+
+# Originalfiler för 3D och film ska aldrig till GitHub eller sajten.
+# Lägg dem i projektmappen; npm run media gör visningsversioner i public/.
+src/content/projekt/**/*.glb
+src/content/projekt/**/*.gltf
+src/content/projekt/**/*.blend
+src/content/projekt/**/*.fbx
+src/content/projekt/**/*.step
+src/content/projekt/**/*.stp
+src/content/projekt/**/*.stl
+src/content/projekt/**/*.mov
+src/content/projekt/**/*.mp4
+src/content/projekt/**/*.mkv
+src/content/projekt/**/*.webm

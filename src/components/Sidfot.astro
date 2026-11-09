@@ -1,0 +1,20 @@
+---
+import { sajt, type Sprak } from '../config/sajt';
+import { t } from '../i18n/ord';
+import Kontaktvagar from './Kontaktvagar.astro';
+
+interface Props {
+  sprak: Sprak;
+}
+const { sprak } = Astro.props;
+const ar = new Date().getFullYear();
+---
+<footer class="vs-sidfot">
+  <div class="ram vs-sidfot__inre">
+    <div class="stack">
+      <p>{sajt.person}. {sajt.roll[sprak]}.</p>
+      <Kontaktvagar sprak={sprak} />
+    </div>
+    <p class="vs-sidfot__rattigheter">© {ar} {sajt.person}. {t(sprak, 'rattigheter')}</p>
+  </div>
+</footer>

@@ -1,0 +1,23 @@
+# Cloudflare Pages headers
+
+/*
+  tdm-reservation: 1
+  tdm-policy: https://vickyvariety.com/.well-known/tdm-policy.json
+  X-Robots-Tag: noai, noimageai
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/modeller/*
+  Cache-Control: public, max-age=604800
+  X-Robots-Tag: noindex, noai, noimageai
+
+/film/*
+  Cache-Control: public, max-age=604800
+  X-Robots-Tag: noindex, noai, noimageai
+
+/.well-known/*
+  Access-Control-Allow-Origin: *

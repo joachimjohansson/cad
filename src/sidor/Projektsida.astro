@@ -1,0 +1,114 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import Ram from '../layouts/Ram.astro';
+import Meta from '../components/Meta.astro';
+import Projektkort from '../components/Projektkort.astro';
+import Modell3D from '../components/Modell3D.astro';
+import Film from '../components/Film.astro';
+import type { Sprak } from '../config/sajt';
+import { t, lank } from '../i18n/ord';
+import { projektISpar, type Projekt } from '../lib/projekt';
+
+interface Props {
+  sprak: Sprak;
+  projekt: Projekt;
+}
+const { sprak, projekt } = Astro.props;
+const { spar } = projekt;
+const post = sprak === 'en' && projekt.en ? projekt.en : projekt.sv;
+const { Content } = await render(post);
+const visarSvenska = sprak === 'en' && !projekt.en;
+const fler = (await projektISpar(spar.slug)).filter((p) => p.id !== projekt.id).slice(0, 3);
+const delning = await getImage({ src: projekt.omslag, width: 1200, format: 'jpg' });
+---
+<Ram
+  sprak={sprak}
+  tema={spar.tema}
+  titel={projekt.titel[sprak]}
+  beskrivning={projekt.beskrivning[sprak]}
+  vag={`/${spar.slug}/${projekt.id}/`}
+  delningsbild={new URL(delning.src, Astro.site).href}
+>
+  <nav class="vs-brodsmulor" aria-label={sprak === 'sv' ? 'Du är här' : 'You are here'}>
+    <ol>
+      <li><a href={lank(sprak, '/')}>{t(sprak, 'start')}</a></li>
+      <li><a href={lank(sprak, `/${spar.slug}/`)}>{spar.namn[sprak]}</a></li>
+      <li aria-current="page">{projekt.titel[sprak]}</li>
+    </ol>
+  </nav>
+
+  <article class="stack" style="gap: var(--mellanrum-4)">
+    <header class="vs-projekthuvud">
+      <h1 class="vs-markerad">{projekt.titel[sprak]}</h1>
+      <p class="ingress">{projekt.beskrivning[sprak]}</p>
+    </header>
+
+    <div class="vs-media">
+      {
+        projekt.modell ? (
+          <Modell3D modell={projekt.modell} sprak={sprak} />
+        ) : (
+          <Image
+            src={projekt.omslag}
+            alt={projekt.omslagAlt[sprak]}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(min-width: 1200px) 1168px, 94vw"
+            format="webp"
+            loading="eager"
+            fetchpriority="high"
+          />
+        )
+      }
+    </div>
+
+    <div class="vs-projektkropp">
+      <div class="vs-berattelse" lang={visarSvenska ? 'sv' : undefined}>
+        {visarSvenska && <p class="vs-notis" lang="en">{t('en', 'saknarEngelska')}</p>}
+        <Content />
+      </div>
+      <aside class="stack">
+        <Meta projekt={projekt} sprak={sprak} />
+      </aside>
+    </div>
+
+    {projekt.film && <Film film={projekt.film} titel={projekt.titel[sprak]} sprak={sprak} />}
+
+    {
+      projekt.bilder.length > 0 && (
+        <ul class="vs-galleri" aria-label={sprak === 'sv' ? 'Bilder' : 'Images'}>
+          {projekt.bilder.map((b) => (
+            <li>
+              <figure>
+                <Image
+                  src={b.bild}
+                  alt={b.alt[sprak]}
+                  widths={[400, 700, 1000]}
+                  sizes="(min-width: 1200px) 560px, (min-width: 760px) 46vw, 94vw"
+                  format="webp"
+                  loading="lazy"
+                />
+                {b.bildtext?.[sprak] && <figcaption>{b.bildtext[sprak]}</figcaption>}
+              </figure>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </article>
+
+  {
+    fler.length > 0 && (
+      <section class="stack">
+        <h2>{t(sprak, 'fleraProjekt')}</h2>
+        <ul class="vs-kortlista">
+          {fler.map((p) => (
+            <li>
+              <Projektkort projekt={p} sprak={sprak} rubrikniva={3} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Ram>

@@ -1,0 +1,41 @@
+---
+import { sajt, spar, type Sprak } from '../config/sajt';
+import { t, lank, andraSprak } from '../i18n/ord';
+import Maskot from './Maskot.astro';
+
+interface Props {
+  sprak: Sprak;
+  /** Sökvägen utan språkprefix, för språkbytet och aktuell länk. */
+  vag: string;
+}
+const { sprak, vag } = Astro.props;
+const annat = andraSprak(sprak);
+const aktiv = (s: string) => vag === s || vag.startsWith(`${s}/`);
+---
+<header class="vs-sidhuvud">
+  <div class="ram vs-sidhuvud__inre">
+    <a class="vs-marke" href={lank(sprak, '/')} aria-label={`${sajt.namn}, ${t(sprak, 'start')}`}>
+      <Maskot />
+      <span>{sajt.namn}</span>
+    </a>
+    <nav class="vs-nav" aria-label={t(sprak, 'huvudmeny')}>
+      <ul>
+        {
+          spar.map((s) => (
+            <li>
+              <a href={lank(sprak, `/${s.slug}/`)} aria-current={aktiv(`/${s.slug}`) ? 'page' : undefined}>
+                {s.namn[sprak]}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={lank(sprak, '/om/')} aria-current={aktiv('/om') ? 'page' : undefined}>{t(sprak, 'om')}</a>
+        </li>
+        <li class="vs-sprak">
+          <a href={lank(annat, vag)} hreflang={annat} lang={annat}>{t(sprak, 'bytSprak')}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

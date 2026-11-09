@@ -1,0 +1,17 @@
+---
+import type { Sprak } from '../config/sajt';
+import type { Projekt } from '../lib/projekt';
+import { t } from '../i18n/ord';
+
+interface Props {
+  projekt: Projekt;
+  sprak: Sprak;
+}
+const { projekt, sprak } = Astro.props;
+---
+<dl class="vs-meta">
+  <div><dt>{t(sprak, 'spar')}</dt><dd>{projekt.spar.namn[sprak]}</dd></div>
+  <div><dt>{t(sprak, 'ar')}</dt><dd>{projekt.ar}</dd></div>
+  {projekt.modell && <div><dt>3D</dt><dd>glb</dd></div>}
+  {projekt.bilder.length > 0 && <div><dt>{sprak === 'sv' ? 'Bilder' : 'Images'}</dt><dd>{projekt.bilder.length + 1}</dd></div>}
+</dl>

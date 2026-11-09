@@ -1,0 +1,27 @@
+---
+// Definierar märket (kuben med ansikte) en gång per sida. Används via <Maskot />.
+// Färgerna kommer från temats tokens, så samma figur får olika uttryck i varje spår.
+---
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="maskot-spel-topp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9BDFF" /><stop offset="1" stop-color="#7B5CFF" /></linearGradient>
+    <linearGradient id="maskot-spel-v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6A4DF0" /><stop offset="1" stop-color="#2A1B86" /></linearGradient>
+    <linearGradient id="maskot-spel-h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4CB8FF" /><stop offset="1" stop-color="#2B45C8" /></linearGradient>
+  </defs>
+  <symbol id="vs-maskot" viewBox="0 0 200 210">
+    <line x1="100" y1="6" x2="100" y2="204" style="stroke:var(--fig-linje);stroke-width:.8;stroke-dasharray:14 4 2 4;opacity:var(--axel-op)" />
+    <line x1="14" y1="110" x2="186" y2="110" style="stroke:var(--fig-linje);stroke-width:.8;stroke-dasharray:14 4 2 4;opacity:var(--axel-op)" />
+    <g style="stroke:var(--fig-linje);stroke-width:var(--fig-sw);stroke-linejoin:round;stroke-linecap:round">
+      <polygon points="100,30 170,70 100,110 30,70" style="fill:var(--fig-topp)" />
+      <polygon points="30,70 100,110 100,190 30,150" style="fill:var(--fig-v)" />
+      <polygon points="100,110 170,70 170,150 100,190" style="fill:var(--fig-h)" />
+    </g>
+    <g transform="matrix(0.7,0.4,0,0.8,30,70)">
+      <circle cx="22" cy="66" r="9" style="fill:var(--kind);opacity:var(--kind-op)" />
+      <circle cx="78" cy="66" r="9" style="fill:var(--kind);opacity:var(--kind-op)" />
+      <ellipse cx="34" cy="48" rx="5.5" ry="7.5" style="fill:var(--fig-oga)" />
+      <ellipse cx="66" cy="48" rx="5.5" ry="7.5" style="fill:var(--fig-oga)" />
+      <path d="M42 64 Q50 73 58 64" style="fill:none;stroke:var(--fig-oga);stroke-width:2.5;stroke-linecap:round;vector-effect:non-scaling-stroke" />
+    </g>
+  </symbol>
+</svg>
