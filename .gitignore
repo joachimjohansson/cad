@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editorer
+.vscode/
+.idea/
+*.swp
+
+# Beroenden och byggfiler
+node_modules/
+dist/
+build/
+.cache/
+
+# Miljövariabler
+.env
+.env.*
+!.env.example
+
+# Loggar
+*.log
