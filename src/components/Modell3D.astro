@@ -19,7 +19,8 @@ interface Props {
 const { modell, sprak } = Astro.props;
 
 const posterbild = await getImage({ src: modell.poster, width: 1600, format: 'webp' });
-const mb = (modell.storlek / 1024 / 1024).toFixed(1);
+const mbTal = modell.storlek / 1024 / 1024;
+const mb = mbTal < 0.1 ? '<0.1' : mbTal.toFixed(1);
 const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
 ---
 <div
@@ -46,7 +47,7 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
   <div class="vs-modell__start">
     <button type="button" class="vs-modell__knapp" data-vs-modell-knapp>
       <span>{t(sprak, 'visa3D')}</span>
-      <span class="vs-modell__storlek">{storlekText} MB</span>
+      <span class="vs-modell__storlek">{storlekText}{"\u00a0"}MB</span>
     </button>
   </div>
   <p class="vs-modell__status" role="status" aria-live="polite" data-vs-modell-status></p>
@@ -207,10 +208,15 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
   const SMAL_SKARM = '(max-width: 700px)';
   const REDUCERAD_ROERELSE = '(prefers-reduced-motion: reduce)';
 
+  // Avkodaren för meshopt-komprimerade modeller ligger på vår egen sajt (public/vendor), inte på en CDN.
+  const meshoptAvkodare = '/vendor/meshopt_decoder.js';
+
   let skriptLaddning: Promise<unknown> | undefined;
   /** Hämtar <model-viewer> först när den behövs. */
   function hamtaModelViewer() {
-    skriptLaddning ??= import('@google/model-viewer');
+    skriptLaddning ??= import('@google/model-viewer').then((modul) => {
+      (modul.ModelViewerElement as unknown as { meshoptDecoderLocation: string }).meshoptDecoderLocation = meshoptAvkodare;
+    });
     return skriptLaddning;
   }
 

@@ -94,7 +94,7 @@ function raknaTriangler(dokument) {
 }
 
 async function optimeraModell(kalla, utfil) {
-  const { NodeIO } = await import('@gltf-transform/core');
+  const { NodeIO, Logger } = await import('@gltf-transform/core');
   const { ALL_EXTENSIONS, EXTMeshoptCompression } = await import('@gltf-transform/extensions');
   const { dedup, prune, weld, simplify, resample, textureCompress, reorder, quantize } = await import('@gltf-transform/functions');
   const { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } = await import('meshoptimizer');
@@ -105,6 +105,7 @@ async function optimeraModell(kalla, utfil) {
     .registerDependencies({ 'meshopt.decoder': MeshoptDecoder, 'meshopt.encoder': MeshoptEncoder });
 
   const dokument = await io.read(kalla);
+  dokument.setLogger(new Logger(Logger.Verbosity.WARN));
   const fore = raknaTriangler(dokument);
 
   await dokument.transform(dedup(), prune(), weld());
@@ -119,7 +120,7 @@ async function optimeraModell(kalla, utfil) {
   await dokument.transform(
     resample(),
     textureCompress({ encoder: sharp, targetFormat: 'webp', resize: [MAX_TEXTUR, MAX_TEXTUR], quality: 85 }),
-    reorder({ encoder: MeshoptSimplifier }),
+    reorder({ encoder: MeshoptEncoder }),
     quantize(),
     prune(),
   );
@@ -160,9 +161,23 @@ async function skapaModellposter(glb, utfil) {
   const mvSokvag = join(rot, 'node_modules', '@google', 'model-viewer', 'dist', 'model-viewer.min.js');
   if (!existsSync(mvSokvag)) throw new Error('Hittar inte @google/model-viewer i node_modules. Kör  npm install  först.');
 
-  const sida = `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;background:#eef0f4}model-viewer{width:1600px;height:1200px;background:#eef0f4;--poster-color:#eef0f4}</style>
-<script type="module" src="/mv.js"></script>
-<model-viewer id="m" src="/modell.glb" camera-orbit="35deg 70deg auto" shadow-intensity="1.1" exposure="1.05" environment-image="neutral" interaction-prompt="none" loading="eager" reveal="auto"></model-viewer>`;
+  const sida = `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#eef0f4}model-viewer{display:block;width:1600px;height:1200px;background:#eef0f4;--poster-color:#eef0f4}</style>
+<script type="module">
+  const { ModelViewerElement } = await import('/mv.js');
+  (ModelViewerElement ?? customElements.get('model-viewer')).meshoptDecoderLocation = '/meshopt_decoder.js';
+  const mv = document.createElement('model-viewer');
+  mv.id = 'm';
+  mv.setAttribute('src', '/modell.glb');
+  mv.setAttribute('camera-orbit', '35deg 70deg auto');
+  mv.setAttribute('shadow-intensity', '1.1');
+  mv.setAttribute('exposure', '1.05');
+  mv.setAttribute('environment-image', 'neutral');
+  mv.setAttribute('interaction-prompt', 'none');
+  mv.setAttribute('loading', 'eager');
+  mv.setAttribute('reveal', 'auto');
+  document.body.append(mv);
+  window.__klar = true;
+</script>`;
 
   const server = createServer((req, res) => {
     const url = req.url.split('?')[0];
@@ -172,6 +187,9 @@ async function skapaModellposter(glb, utfil) {
     } else if (url === '/mv.js') {
       res.writeHead(200, { 'content-type': 'text/javascript' });
       res.end(readFileSync(mvSokvag));
+    } else if (url === '/meshopt_decoder.js') {
+      res.writeHead(200, { 'content-type': 'text/javascript' });
+      res.end(readFileSync(join(rot, 'node_modules', 'meshoptimizer', 'meshopt_decoder.cjs')));
     } else if (url === '/modell.glb') {
       res.writeHead(200, { 'content-type': 'model/gltf-binary' });
       res.end(readFileSync(glb));
@@ -192,6 +210,7 @@ async function skapaModellposter(glb, utfil) {
     }
     const flik = await webblasare.newPage({ viewport: { width: 1600, height: 1200 }, deviceScaleFactor: 1 });
     await flik.goto(`http://127.0.0.1:${port}/`);
+    await flik.waitForFunction(() => window.__klar === true, null, { timeout: 30000 });
     await flik.evaluate(
       () =>
         new Promise((klar, fel) => {
