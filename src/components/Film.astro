@@ -1,0 +1,232 @@
+---
+/**
+ * Film för ett projekt.
+ *
+ * Lokal MP4 spelas i <video>. "loop" är en tyst slinga som bara startar av sig
+ * själv när den syns och besökaren inte bett om mindre rörelse eller dataspar.
+ * "visning" har kontroller och ljud och startar aldrig av sig själv.
+ * HLS (.m3u8) spelas direkt i Safari, annars laddas hls.js först när man
+ * trycker på play.
+ */
+import { getImage } from 'astro:assets';
+import type { Sprak } from '../config/sajt';
+import { t } from '../i18n/ord';
+import type { Projekt } from '../lib/projekt';
+
+interface Props {
+  film: NonNullable<Projekt['film']>;
+  titel: string;
+  sprak: Sprak;
+  bildtext?: string;
+}
+const { film, titel, sprak, bildtext } = Astro.props;
+
+const poster = film.poster ? await getImage({ src: film.poster, width: 1600, format: 'webp' }) : undefined;
+const arVideofil = film.hls || /\.(mp4|webm|m4v|mov)(\?|$)/i.test(film.src) || film.src.startsWith('/');
+const loop = film.typ === 'loop';
+---
+<figure class="vs-film" data-vs-film data-typ={film.typ} data-hls={film.hls ? '' : undefined}>
+  {
+    arVideofil ? (
+      <div class="vs-film__ram">
+        <video
+          class="vs-film__video"
+          playsinline
+          preload={film.hls ? 'none' : 'metadata'}
+          poster={poster?.src}
+          aria-label={titel}
+          muted={loop}
+          loop={loop}
+          controls={!loop}
+          src={film.hls ? undefined : film.src}
+          data-src={film.hls ? film.src : undefined}
+          data-vs-film-video
+        />
+        <button type="button" class="vs-film__knapp" data-vs-film-knapp data-text-spela={t(sprak, 'spelaFilm')} data-text-pausa={t(sprak, 'pausaFilm')} aria-label={t(sprak, 'spelaFilm')}>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+          <span>{t(sprak, 'spelaFilm')}</span>
+        </button>
+        <p class="vs-film__fel" role="status" data-vs-film-fel data-text={t(sprak, 'filmFel')} />
+      </div>
+    ) : (
+      <p class="vs-film__lank">
+        <a href={film.src} rel="noopener">{t(sprak, 'oppnaFilm')}: {titel}</a>
+      </p>
+    )
+  }
+  {bildtext && <figcaption>{bildtext}</figcaption>}
+</figure>
+
+<style is:global>
+  .vs-film {
+    margin: 0;
+    display: grid;
+    gap: var(--mellanrum-1);
+  }
+  .vs-film__ram {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--yta-3);
+    border: var(--linjebredd, 1px) solid var(--linje);
+    border-radius: var(--radie);
+    overflow: hidden;
+  }
+  .vs-film__video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--yta-3);
+  }
+  .vs-film__knapp {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    min-height: 44px;
+    padding: 0.6rem 1.1rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--yta-2);
+    border: 1px solid var(--linje-stark);
+    border-radius: var(--radie-liten);
+    cursor: pointer;
+    transition:
+      background var(--rorelse) var(--kurva),
+      border-color var(--rorelse) var(--kurva);
+  }
+  .vs-film__knapp:hover {
+    border-color: var(--accent);
+    background: var(--yta-3);
+  }
+  /* Spelar en slinga: knappen blir en liten pausknapp i hörnet */
+  .vs-film__knapp[data-lage='spelar'] {
+    left: auto;
+    top: auto;
+    right: var(--mellanrum-2);
+    bottom: var(--mellanrum-2);
+    transform: none;
+  }
+  .vs-film__knapp[data-lage='spelar'] svg {
+    display: none;
+  }
+  .vs-film__knapp[data-lage='dold'] {
+    display: none;
+  }
+  .vs-film__fel {
+    position: absolute;
+    left: var(--mellanrum-2);
+    bottom: var(--mellanrum-2);
+    margin: 0;
+    padding: 0.25rem 0.6rem;
+    font-size: var(--steg--1);
+    color: var(--text);
+    background: var(--yta-2);
+    border: 1px solid var(--accent);
+    border-radius: var(--radie-liten);
+  }
+  .vs-film__fel:empty {
+    display: none;
+  }
+  .vs-film figcaption {
+    font-size: var(--steg--1);
+    color: var(--text-svag);
+    max-width: var(--textbredd);
+  }
+</style>
+
+<script>
+  const REDUCERAD_ROERELSE = '(prefers-reduced-motion: reduce)';
+
+  function sparar(): boolean {
+    const anslutning = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    return Boolean(anslutning?.saveData);
+  }
+
+  /** Kopplar ett HLS-flöde till videon. Safari klarar det själv, övriga får hls.js. */
+  async function koppplaHls(video: HTMLVideoElement): Promise<void> {
+    const kalla = video.dataset.src;
+    if (!kalla || video.dataset.hlsKlar) return;
+    video.dataset.hlsKlar = '1';
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = kalla;
+      return;
+    }
+    const { default: Hls } = await import('hls.js');
+    if (!Hls.isSupported()) throw new Error('HLS stöds inte');
+    const hls = new Hls();
+    hls.loadSource(kalla);
+    hls.attachMedia(video);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-vs-film]').forEach((figur) => {
+    const video = figur.querySelector<HTMLVideoElement>('[data-vs-film-video]');
+    const knapp = figur.querySelector<HTMLButtonElement>('[data-vs-film-knapp]');
+    const felruta = figur.querySelector<HTMLElement>('[data-vs-film-fel]');
+    if (!video || !knapp) return;
+    const aLoop = figur.dataset.typ === 'loop';
+
+    const visaFel = () => {
+      if (felruta) felruta.textContent = felruta.dataset.text ?? '';
+      knapp.dataset.lage = '';
+    };
+
+    const spela = async () => {
+      if (felruta) felruta.textContent = '';
+      try {
+        await koppplaHls(video);
+        await video.play();
+      } catch {
+        visaFel();
+      }
+    };
+
+    const uppdateraKnapp = () => {
+      if (aLoop && !video.paused && !video.controls) {
+        knapp.dataset.lage = 'spelar';
+        knapp.querySelector('span')!.textContent = knapp.dataset.textPausa ?? '';
+        knapp.setAttribute('aria-label', knapp.dataset.textPausa ?? '');
+      } else if (!video.paused) {
+        knapp.dataset.lage = 'dold';
+      } else {
+        knapp.dataset.lage = '';
+        knapp.querySelector('span')!.textContent = knapp.dataset.textSpela ?? '';
+        knapp.setAttribute('aria-label', knapp.dataset.textSpela ?? '');
+      }
+    };
+    video.addEventListener('play', uppdateraKnapp);
+    video.addEventListener('pause', uppdateraKnapp);
+    video.addEventListener('error', () => {
+      if (video.src || video.dataset.hlsKlar) visaFel();
+    });
+
+    knapp.addEventListener('click', () => {
+      if (aLoop && !video.paused && !video.controls) {
+        // Besökaren pausar slingan och får därefter vanliga kontroller.
+        video.pause();
+        video.controls = true;
+        return;
+      }
+      if (aLoop) video.controls = true;
+      video.muted = aLoop ? video.muted : false;
+      spela();
+    });
+
+    // Autoplay bara för tysta slingor, när de syns, och bara om besökaren inte bett om mindre rörelse.
+    if (aLoop && 'IntersectionObserver' in window && !matchMedia(REDUCERAD_ROERELSE).matches && !sparar()) {
+      new IntersectionObserver(
+        (poster) => {
+          for (const post of poster) {
+            if (post.isIntersecting && video.paused && !video.controls) spela();
+            else if (!post.isIntersecting && !video.paused && !video.controls) video.pause();
+          }
+        },
+        { threshold: 0.4 },
+      ).observe(video);
+    }
+  });
+</script>

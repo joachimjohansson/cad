@@ -1,0 +1,33 @@
+---
+import Ram from '../layouts/Ram.astro';
+import Projektkort from '../components/Projektkort.astro';
+import type { Spar, Sprak } from '../config/sajt';
+import { t } from '../i18n/ord';
+import { projektISpar } from '../lib/projekt';
+
+interface Props {
+  sprak: Sprak;
+  spar: Spar;
+}
+const { sprak, spar } = Astro.props;
+const projekt = await projektISpar(spar.slug);
+---
+<Ram sprak={sprak} tema={spar.tema} titel={spar.namn[sprak]} beskrivning={spar.ingress[sprak]} vag={`/${spar.slug}/`}>
+  <header class="vs-sparhuvud">
+    <h1 class="vs-markerad">{spar.namn[sprak]}</h1>
+    <p class="ingress">{spar.ingress[sprak]}</p>
+  </header>
+  {
+    projekt.length > 0 ? (
+      <ul class="vs-kortlista">
+        {projekt.map((p, i) => (
+          <li>
+            <Projektkort projekt={p} sprak={sprak} tidig={i < 2} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>{t(sprak, 'ingaProjekt')}</p>
+    )
+  }
+</Ram>

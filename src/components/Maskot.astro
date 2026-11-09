@@ -1,0 +1,18 @@
+---
+interface Props {
+  etikett?: string;
+  class?: string;
+}
+const { etikett, class: klass } = Astro.props;
+---
+{
+  etikett ? (
+    <svg class:list={['vs-maskot', klass]} viewBox="0 0 200 210" role="img" aria-label={etikett}>
+      <use href="#vs-maskot" />
+    </svg>
+  ) : (
+    <svg class:list={['vs-maskot', klass]} viewBox="0 0 200 210" aria-hidden="true" focusable="false">
+      <use href="#vs-maskot" />
+    </svg>
+  )
+}

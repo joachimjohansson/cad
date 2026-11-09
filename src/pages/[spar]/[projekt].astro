@@ -1,0 +1,11 @@
+---
+import Projektsida from '../../sidor/Projektsida.astro';
+import { allaProjekt } from '../../lib/projekt';
+
+export async function getStaticPaths() {
+  const projekt = await allaProjekt();
+  return projekt.map((p) => ({ params: { spar: p.spar.slug, projekt: p.id }, props: { projekt: p } }));
+}
+const { projekt } = Astro.props;
+---
+<Projektsida sprak="en" projekt={projekt} />

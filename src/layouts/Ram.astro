@@ -1,0 +1,81 @@
+---
+import '@fontsource-variable/figtree';
+import '@fontsource-variable/bricolage-grotesque/wdth.css';
+import '@fontsource-variable/archivo/wdth.css';
+import '@fontsource-variable/fredoka';
+import '@fontsource/chakra-petch/500.css';
+import '@fontsource/chakra-petch/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/gochi-hand';
+import '../styles/tokens.css';
+import '../styles/bas.css';
+import '../styles/signatur.css';
+
+import { sajt, type Sprak, type Tema } from '../config/sajt';
+import { t, lank, andraSprak } from '../i18n/ord';
+import MaskotDefs from '../components/MaskotDefs.astro';
+import Sidhuvud from '../components/Sidhuvud.astro';
+import Sidfot from '../components/Sidfot.astro';
+
+interface Props {
+  sprak: Sprak;
+  /** Vilket tema sidan har. Startsidan och Om är neutrala. */
+  tema: Tema | 'start';
+  titel: string;
+  beskrivning: string;
+  /** Sökvägen utan språkprefix, till exempel /industri/ventilhus-v40/. */
+  vag: string;
+  /** Absolut adress till en delningsbild. */
+  delningsbild?: string;
+}
+
+const { sprak, tema, titel, beskrivning, vag, delningsbild } = Astro.props;
+const helTitel = titel === sajt.namn ? `${sajt.namn}, ${sajt.person}` : `${titel} | ${sajt.namn}`;
+const kanonisk = new URL(lank(sprak, vag), Astro.site);
+const annat = andraSprak(sprak);
+const temaFarg: Record<string, string> = {
+  start: '#f5f4f8',
+  industri: '#f2f5f7',
+  spel: '#0e0b24',
+  kawaii: '#fff1f5',
+};
+---
+<!doctype html>
+<html lang={sprak} data-spar={tema}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{helTitel}</title>
+    <meta name="description" content={beskrivning} />
+    <link rel="canonical" href={kanonisk} />
+    <link rel="alternate" hreflang={sprak} href={kanonisk} />
+    <link rel="alternate" hreflang={annat} href={new URL(lank(annat, vag), Astro.site)} />
+    <link rel="alternate" hreflang="x-default" href={new URL(lank('en', vag), Astro.site)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content={temaFarg[tema]} />
+
+    <!-- Förbehåll mot text- och datautvinning och AI-träning -->
+    <meta name="robots" content="index, follow, noai, noimageai" />
+    <meta name="tdm-reservation" content="1" />
+    <meta name="tdm-policy" content={new URL('/.well-known/tdm-policy.json', Astro.site)} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={sajt.namn} />
+    <meta property="og:title" content={helTitel} />
+    <meta property="og:description" content={beskrivning} />
+    <meta property="og:url" content={kanonisk} />
+    <meta property="og:locale" content={sprak === 'sv' ? 'sv_SE' : 'en_GB'} />
+    {delningsbild && <meta property="og:image" content={delningsbild} />}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="hoppa-lank" href="#vs-innehall">{t(sprak, 'hoppaTillInnehall')}</a>
+    <MaskotDefs />
+    <Sidhuvud sprak={sprak} vag={vag} />
+    <main id="vs-innehall" class="ram vs-sidinnehall" tabindex="-1">
+      <slot />
+    </main>
+    <Sidfot sprak={sprak} />
+  </body>
+</html>

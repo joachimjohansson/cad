@@ -1,0 +1,10 @@
+---
+import Sparsida from '../../../sidor/Sparsida.astro';
+import { spar } from '../../../config/sajt';
+
+export function getStaticPaths() {
+  return spar.map((s) => ({ params: { spar: s.slug }, props: { spar: s } }));
+}
+const { spar: aktuellt } = Astro.props;
+---
+<Sparsida sprak="sv" spar={aktuellt} />

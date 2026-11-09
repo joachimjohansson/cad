@@ -1,0 +1,16 @@
+---
+import type { Spar, Sprak } from '../config/sajt';
+import { lank } from '../i18n/ord';
+import Maskot from './Maskot.astro';
+
+interface Props {
+  spar: Spar;
+  sprak: Sprak;
+}
+const { spar, sprak } = Astro.props;
+---
+<a class="vs-dorr" data-spar={spar.tema} href={lank(sprak, `/${spar.slug}/`)}>
+  <Maskot />
+  <span class="vs-dorr__namn">{spar.namn[sprak]}</span>
+  <span class="vs-dorr__text">{spar.beskrivning[sprak]}</span>
+</a>

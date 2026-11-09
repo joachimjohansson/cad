@@ -1,0 +1,252 @@
+/*
+  Design-tokens.
+
+  Ramen (grid, typografisk skala, brödtypsnitt, komponenter) är gemensam.
+  Ett tema byter bara värdena nedan. Temat sätts med data-spar på <html>,
+  men attributet fungerar på vilket element som helst, så dörrarna på
+  startsidan kan visa sina spår i förväg.
+
+  Lägger man till ett nytt tema behövs bara ett nytt block här och dess
+  signatur i signatur.css.
+*/
+
+/* Gemensamt för alla teman */
+:root {
+  --brod-font: 'Figtree Variable', 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Typografisk skala, ungefär 1,25 */
+  --steg--1: 0.8125rem;
+  --steg-0: 1rem;
+  --steg-1: 1.125rem;
+  --steg-2: 1.5rem;
+  --steg-3: clamp(1.6rem, 1.2rem + 1.8vw, 2.2rem);
+  --steg-4: clamp(2rem, 1.3rem + 3.2vw, 3.2rem);
+  --steg-5: clamp(2.5rem, 1.4rem + 5.4vw, 4.6rem);
+
+  --mellanrum-1: 0.5rem;
+  --mellanrum-2: 1rem;
+  --mellanrum-3: 1.5rem;
+  --mellanrum-4: 2.5rem;
+  --mellanrum-5: 4.5rem;
+
+  --sidbredd: 1200px;
+  --textbredd: 64ch;
+  --kant: max(1rem, env(safe-area-inset-left, 0px));
+  --kant-h: max(1rem, env(safe-area-inset-right, 0px));
+}
+
+/* Startsidan: neutral och lekfull */
+[data-spar='start'] {
+  --yta: #f5f4f8;
+  --yta-2: #ffffff;
+  --yta-3: #ece9f4;
+  --text: #1f1a2e;
+  --text-svag: #5e5872;
+  --accent: #6b4fd8;
+  --accent-text: #553bc2;
+  --linje: #d9d5e4;
+  --linje-stark: #8c86a3;
+  --rutnat: transparent;
+  --glod: transparent;
+  --glod-2: transparent;
+  --blob: #e9e3fa;
+  --chip: #ece9f4;
+  --rubrik-font: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--brod-font);
+  --rubrik-vikt: 700;
+  --rubrik-bredd: 100%;
+  --rubrik-spatiering: -0.02em;
+  --detalj-font: var(--brod-font);
+  --radie: 18px;
+  --radie-liten: 10px;
+  --linjebredd: 1px;
+  --rorelse: 220ms;
+  --kurva: cubic-bezier(0.3, 0.7, 0.2, 1);
+  --hover-figur: translateY(-4px);
+  --fig-topp: #ffffff;
+  --fig-v: #e4def7;
+  --fig-h: #cfc5f0;
+  --fig-linje: #1f1a2e;
+  --fig-sw: 2.5;
+  --fig-oga: #1f1a2e;
+  --kind: #f29bb8;
+  --kind-op: 0.7;
+  --axel-op: 0;
+  color-scheme: light;
+}
+
+/* Industri: ritpapper, ritbläck, måttsättning */
+[data-spar='industri'] {
+  --yta: #f2f5f7;
+  --yta-2: #fbfcfd;
+  --yta-3: #e6ecf1;
+  --text: #13243f;
+  --text-svag: #4a5a70;
+  --accent: #c0392b;
+  --accent-text: #b03325;
+  --linje: #b9c6d3;
+  /* Kraftig nog för att synas som 1px även på skärmar med låg upplösning */
+  --linje-stark: #3a4b63;
+  --rutnat: #dce4eb;
+  --glod: transparent;
+  --glod-2: transparent;
+  --blob: transparent;
+  --chip: transparent;
+  --rubrik-font: 'Archivo Variable', 'Archivo', 'Arial Narrow', var(--brod-font);
+  --rubrik-vikt: 600;
+  --rubrik-bredd: 72%;
+  --rubrik-spatiering: 0.005em;
+  --detalj-font: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --radie: 0px;
+  --radie-liten: 0px;
+  --rorelse: 120ms;
+  --kurva: linear;
+  --hover-figur: none;
+  --fig-topp: #fbfcfd;
+  --fig-v: #fbfcfd;
+  --fig-h: #fbfcfd;
+  --fig-linje: #13243f;
+  --fig-sw: 1.4;
+  --fig-oga: #13243f;
+  --kind: transparent;
+  --kind-op: 0;
+  --axel-op: 0.8;
+  color-scheme: light;
+}
+
+/* Spel: alltid mörkt, djupblått och violett, glöd */
+[data-spar='spel'] {
+  --yta: #0e0b24;
+  --yta-2: #1b1544;
+  --yta-3: #120e33;
+  --text: #eeebff;
+  --text-svag: #ada6de;
+  --accent: #8f7bff;
+  --accent-text: #b9aaff;
+  --linje: #352c72;
+  --linje-stark: #6c5ce0;
+  --rutnat: transparent;
+  --glod: rgba(123, 92, 255, 0.45);
+  --glod-2: rgba(63, 169, 245, 0.35);
+  --blob: transparent;
+  --chip: rgba(143, 123, 255, 0.2);
+  --rubrik-font: 'Chakra Petch', var(--brod-font);
+  --rubrik-vikt: 700;
+  --rubrik-bredd: 100%;
+  --rubrik-spatiering: 0;
+  --detalj-font: 'Chakra Petch', var(--brod-font);
+  --radie: 0px;
+  --radie-liten: 0px;
+  --rorelse: 280ms;
+  --kurva: cubic-bezier(0.2, 1.4, 0.4, 1);
+  --hover-figur: translateY(-22%) scale(1.3);
+  --fig-topp: url(#maskot-spel-topp);
+  --fig-v: url(#maskot-spel-v);
+  --fig-h: url(#maskot-spel-h);
+  --fig-linje: #d8d0ff;
+  --fig-sw: 1.5;
+  --fig-oga: #ffffff;
+  --kind: #ff6fb1;
+  --kind-op: 0.55;
+  --axel-op: 0;
+  color-scheme: dark;
+}
+
+/* Kawaii: pastell, runda former, handskrivna accenter */
+[data-spar='kawaii'] {
+  --yta: #fff1f5;
+  --yta-2: #ffffff;
+  --yta-3: #ffe4ec;
+  --text: #3d1f2c;
+  --text-svag: #7a4a5c;
+  /* Accenten används till former. Text i accentfärg använder --accent-text. */
+  --accent: #e24c82;
+  --accent-text: #b02a5e;
+  --linje: #f6cfdc;
+  --linje-stark: #d98aa6;
+  --rutnat: transparent;
+  --glod: transparent;
+  --glod-2: transparent;
+  --blob: #ffd3e1;
+  --chip: #ffe4ec;
+  --rubrik-font: 'Fredoka Variable', 'Fredoka', ui-rounded, var(--brod-font);
+  --rubrik-vikt: 600;
+  --rubrik-bredd: 100%;
+  --rubrik-spatiering: 0;
+  --detalj-font: 'Gochi Hand', 'Comic Sans MS', cursive;
+  --radie: 28px;
+  --radie-liten: 16px;
+  --rorelse: 360ms;
+  --kurva: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --hover-figur: translateY(-6px) rotate(-4deg);
+  --fig-topp: #ffe6ee;
+  --fig-v: #ffc6d7;
+  --fig-h: #ffdce6;
+  --fig-linje: #3d1f2c;
+  --fig-sw: 3;
+  --fig-oga: #3d1f2c;
+  --kind: #ff7fa8;
+  --kind-op: 0.8;
+  --axel-op: 0;
+  color-scheme: light;
+}
+
+/* Mörkt läge där det passar temat. Spel är alltid mörkt. */
+@media (prefers-color-scheme: dark) {
+  [data-spar='start'] {
+    --yta: #16131f;
+    --yta-2: #211d2e;
+    --yta-3: #1b1827;
+    --text: #eeeaf7;
+    --text-svag: #b1aac6;
+    --accent: #a592ff;
+    --accent-text: #b8a9ff;
+    --linje: #3a3450;
+    --linje-stark: #7d7699;
+    --blob: #2c2541;
+    --chip: #2a2539;
+    --fig-topp: #2e2944;
+    --fig-v: #3b3459;
+    --fig-h: #4a4170;
+    --fig-linje: #eeeaf7;
+    --fig-oga: #eeeaf7;
+    color-scheme: dark;
+  }
+  /* Industri blir en blåkopia */
+  [data-spar='industri'] {
+    --yta: #0f2c4f;
+    --yta-2: #12345c;
+    --yta-3: #0c2543;
+    --text: #e3eef9;
+    --text-svag: #a9c4e0;
+    --accent: #ffb36b;
+    --accent-text: #ffc48e;
+    --linje: #3c6591;
+    --linje-stark: #a9cbec;
+    --rutnat: rgba(159, 195, 232, 0.16);
+    --fig-topp: #12345c;
+    --fig-v: #12345c;
+    --fig-h: #12345c;
+    --fig-linje: #d4e6f8;
+    --fig-oga: #d4e6f8;
+    color-scheme: dark;
+  }
+  [data-spar='kawaii'] {
+    --yta: #26151d;
+    --yta-2: #34202a;
+    --yta-3: #2e1b24;
+    --text: #ffe8f0;
+    --text-svag: #e3b3c6;
+    --accent: #ff8db5;
+    --accent-text: #ff9ec0;
+    --linje: #553242;
+    --linje-stark: #a56a82;
+    --blob: #4a2533;
+    --chip: #432330;
+    --fig-topp: #ffd9e5;
+    --fig-v: #f7a9c2;
+    --fig-h: #ffc4d6;
+    --fig-linje: #26151d;
+    --fig-oga: #26151d;
+    color-scheme: dark;
+  }
+}
