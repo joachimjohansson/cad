@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import type { ImageMetadata } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { hittaSpar, type Spar, type Sprak } from '../config/sajt';
+import { medBas } from '../i18n/ord';
 
 const bildfiler = import.meta.glob<ImageMetadata>('/src/content/projekt/*/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}', {
   eager: true,
@@ -114,7 +115,7 @@ async function laddaProjekt(): Promise<Projekt[]> {
       }
       const poster = filer.get(`${namn}.poster.webp`) ?? fel(id, `Posterbilden "${namn}.poster.webp" saknas. Kör  npm run media.`);
       modell = {
-        src: `/modeller/${id}/${namn}.glb`,
+        src: medBas(`/modeller/${id}/${namn}.glb`),
         poster,
         storlek: statSync(publik).size,
         alt: {
@@ -133,7 +134,7 @@ async function laddaProjekt(): Promise<Projekt[]> {
         if (!existsSync(join(process.cwd(), 'public', 'film', id, `${namn}.mp4`))) {
           fel(id, `Filmen "${data.film}" har ingen webbversion än. Kör  npm run media  så konverteras den till MP4 med posterbild.`);
         }
-        film = { src: `/film/${id}/${namn}.mp4`, poster: filer.get(`${namn}.poster.webp`), typ: data.filmTyp, hls: false };
+        film = { src: medBas(`/film/${id}/${namn}.mp4`), poster: filer.get(`${namn}.poster.webp`), typ: data.filmTyp, hls: false };
       }
     }
 

@@ -3,7 +3,9 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://vickyvariety.com',
+  // SITE och BASE sätts av GitHub Pages-bygget. Utan dem byggs sajten för den riktiga domänen.
+  site: process.env.SITE ?? 'https://vickyvariety.com',
+  base: process.env.BASE ?? '/',
   trailingSlash: 'ignore',
   i18n: {
     defaultLocale: 'en',

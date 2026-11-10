@@ -56,11 +56,19 @@ export function t(sprak: Sprak, nyckel: OrdNyckel): string {
   return ord[nyckel][sprak];
 }
 
+/** Sajtens bassökväg, till exempel /cad på GitHub Pages och tom på den riktiga domänen. */
+const BAS = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+/** Lägger till bassökvägen framför en adress på sajten, till exempel /modeller/x.glb. */
+export function medBas(sokvag: string): string {
+  return `${BAS}${sokvag.startsWith('/') ? sokvag : `/${sokvag}`}`;
+}
+
 /** Bygger en adress för rätt språk. Engelska ligger på roten, svenska under /sv. */
 export function lank(sprak: Sprak, sokvag = '/'): string {
   const ren = sokvag.startsWith('/') ? sokvag : `/${sokvag}`;
-  if (sprak === 'en') return ren;
-  return ren === '/' ? '/sv/' : `/sv${ren}`;
+  if (sprak === 'en') return medBas(ren);
+  return medBas(ren === '/' ? '/sv/' : `/sv${ren}`);
 }
 
 /** Samma sida på det andra språket. */
