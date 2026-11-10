@@ -67,7 +67,6 @@ export const spar: Spar[] = [
 
 export const sajt = {
   namn: 'Vicky Variety',
-  person: 'Victoria Wendelid',
   url: 'https://vickyvariety.com',
   roll: {
     sv: 'Illustratör och 3D-formgivare',

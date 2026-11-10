@@ -520,6 +520,22 @@ a:hover {
   border-left: 3px solid var(--accent);
   color: var(--text-svag);
 }
+.vs-berattelse :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--yta-3);
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+.vs-berattelse pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radie-liten);
+  border: 1px solid var(--linje);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
 .vs-notis {
   padding: 0.75rem 1rem;
   border-radius: var(--radie-liten);

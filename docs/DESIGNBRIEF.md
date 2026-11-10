@@ -150,20 +150,14 @@ På din dator behöver du Node.js 24, git och ett textprogram, till exempel VS C
 
 ## Domänförslag
 
-Rekommendationen är `vickyvariety.com` som huvuddomän, plus `victoriawendelid.se` som pekar dit. Då hittar både den som minns konstnärsnamnet och den som söker på ditt riktiga namn rätt. Alla tio förslag nedan var lediga när de kontrollerades den 9 november 2026 i ett domänregister. `vickyvariety.se` är däremot redan upptagen.
+Rekommendationen är `vickyvariety.com` som huvuddomän. Konstnärsnamnet är själva konceptet, flera uttryck i en person, och det fungerar både på svenska och internationellt. Alla fyra förslag nedan var lediga när de kontrollerades den 9 november 2026 i ett domänregister. `vickyvariety.se` är däremot redan upptagen.
 
 | Domän | Ledig | Varför den passar |
 | --- | --- | --- |
 | vickyvariety.com | Ja | Konstnärsnamnet är själva konceptet med flera uttryck. Fungerar internationellt. Bästa valet. |
-| victoriawendelid.se | Ja | Ditt riktiga namn för svenska kunder och arbetsgivare. Passar som omdirigering. |
-| victoriawendelid.com | Ja | Ditt riktiga namn internationellt. Bra att köpa för att skydda namnet. |
-| wendelid.com | Ja | Kort och ovanligt efternamn, och en sällsynt ledig .com. Tidlös, men säger inget om vad du gör. |
-| wendelid.se | Ja | Kort svensk variant av efternamnet. |
-| vickywendelid.com | Ja | Personligt och lekfullt, och knyter ihop smeknamnet med efternamnet. |
 | vickyvariety.studio | Ja | Signalerar studio och yrkesverksamhet. Bra om du vill växa till en liten studio. |
 | vickyvariety.art | Ja | Passar illustrationerna och spelkonsten, mindre industrispåret. |
 | vickyvariety.design | Ja | Täcker alla tre spåren, även CAD och formgivning. |
-| studiowendelid.com | Ja | Seriöst och neutralt, och passar bra mot industrikunder. |
 
 Köp gärna `.com` först, eftersom den tas snabbast. Toppdomäner som `.studio`, `.art` och `.design` kostar ofta mer per år än `.com`, och priset vid förnyelse kan vara högre än första året. Kontrollera priset innan du köper. Säljer inte Cloudflare Registrar `.se` köper du den hos en svensk registrar och pekar den till Cloudflare.
 

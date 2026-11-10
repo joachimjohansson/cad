@@ -1,6 +1,6 @@
 # Vicky Variety
 
-Portfolio för Victoria Wendelid, illustratör och 3D-formgivare. Byggd med Astro och publicerad på Cloudflare Pages.
+Portfolio för Vicky Variety, illustratör och 3D-formgivare. Byggd med Astro och publicerad på Cloudflare Pages.
 
 ## Kom igång
 

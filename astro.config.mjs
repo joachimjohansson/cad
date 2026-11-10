@@ -18,6 +18,8 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      // Instruktionen nås bara via direktlänk.
+      filter: (sida) => !sida.includes('/instruktion/'),
       i18n: { defaultLocale: 'en', locales: { en: 'en', sv: 'sv-SE' } },
     }),
   ],

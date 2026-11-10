@@ -28,10 +28,12 @@ interface Props {
   vag: string;
   /** Absolut adress till en delningsbild. */
   delningsbild?: string;
+  /** Sidor som bara ska nås via direktlänk: indexeras inte och visar inga språkalternativ för sökmotorer. */
+  dold?: boolean;
 }
 
-const { sprak, tema, titel, beskrivning, vag, delningsbild } = Astro.props;
-const helTitel = titel === sajt.namn ? `${sajt.namn}, ${sajt.person}` : `${titel} | ${sajt.namn}`;
+const { sprak, tema, titel, beskrivning, vag, delningsbild, dold = false } = Astro.props;
+const helTitel = titel === sajt.namn ? sajt.namn : `${titel} | ${sajt.namn}`;
 const kanonisk = new URL(lank(sprak, vag), Astro.site);
 const annat = andraSprak(sprak);
 // Visningsversionen på GitHub Pages ska inte indexeras av sökmotorer.
@@ -50,15 +52,21 @@ const temaFarg: Record<string, string> = {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{helTitel}</title>
     <meta name="description" content={beskrivning} />
-    <link rel="canonical" href={kanonisk} />
-    <link rel="alternate" hreflang={sprak} href={kanonisk} />
-    <link rel="alternate" hreflang={annat} href={new URL(lank(annat, vag), Astro.site)} />
-    <link rel="alternate" hreflang="x-default" href={new URL(lank('en', vag), Astro.site)} />
+    {
+      !dold && (
+        <>
+          <link rel="canonical" href={kanonisk} />
+          <link rel="alternate" hreflang={sprak} href={kanonisk} />
+          <link rel="alternate" hreflang={annat} href={new URL(lank(annat, vag), Astro.site)} />
+          <link rel="alternate" hreflang="x-default" href={new URL(lank('en', vag), Astro.site)} />
+        </>
+      )
+    }
     <link rel="icon" href={medBas('/favicon.svg')} type="image/svg+xml" />
     <meta name="theme-color" content={temaFarg[tema]} />
 
     <!-- Förbehåll mot text- och datautvinning och AI-träning -->
-    <meta name="robots" content={demo ? 'noindex, nofollow, noai, noimageai' : 'index, follow, noai, noimageai'} />
+    <meta name="robots" content={demo || dold ? 'noindex, nofollow, noai, noimageai' : 'index, follow, noai, noimageai'} />
     <meta name="tdm-reservation" content="1" />
     <meta name="tdm-policy" content={new URL(medBas('/.well-known/tdm-policy.json'), Astro.site)} />
 

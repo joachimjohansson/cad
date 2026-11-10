@@ -5,7 +5,7 @@ description: Lägger till ett nytt projekt i Vicky Varietys portfolio från en m
 
 # Nytt projekt
 
-Målet är att Victoria eller Joachim ska kunna lägga till ett projekt med en mening. Allt sker i projektmappen, ingen kod ändras.
+Målet är att Vicky eller Joachim ska kunna lägga till ett projekt med en mening. Allt sker i projektmappen, ingen kod ändras.
 
 ## Indata
 
@@ -20,7 +20,7 @@ Du behöver en källmapp med filer och en kort beskrivning. Fråga bara om det s
 1. **Läs källmappen.** Lista filerna. Titta på varje bild med Read, så att texterna beskriver vad bilderna faktiskt visar.
 2. **Välj mappnamn.** Små bokstäver, siffror och bindestreck, utan å, ä och ö (å blir a, ä blir a, ö blir o). Kontrollera att `src/content/projekt/<namn>/` inte redan finns.
 3. **Kopiera filerna** till `src/content/projekt/<namn>/`. Omslaget döps till `omslag.<ändelse>`. Övriga bilder får ett nummerprefix i den ordning de ska visas (`02-…`, `03-…`). Konvertera HEIC, TIFF och PSD till JPG med sharp först. Bilder större än 4000 pixlar krymps till 4000 på längsta sidan. `.glb` och film kopieras med enkla namn. Originalen i källmappen rörs inte.
-4. **Skriv `index.md`** enligt `INSTRUKTION.md` och schemat i `src/content.config.ts`. Berättelsen skrivs i jagform som Victoria, 120 till 300 ord, med början, problem, ett beslut och slut. Hitta inte på fakta om kunder, siffror eller namn. Saknas underlag, skriv kortare och markera med en HTML-kommentar `<!-- Komplettera: … -->` vad Victoria bör fylla i. Skriv alt-texter för alla bilder.
+4. **Skriv `index.md`** enligt `INSTRUKTION.md` och schemat i `src/content.config.ts`. Berättelsen skrivs i jagform som Vicky, 120 till 300 ord, med början, problem, ett beslut och slut. Hitta inte på fakta om kunder, siffror eller namn. Saknas underlag, skriv kortare och markera med en HTML-kommentar `<!-- Komplettera: … -->` vad Vicky bör fylla i. Skriv alt-texter för alla bilder.
 5. **Skriv `index.en.md`** med samma innehåll på naturlig engelska. Den har bara fälten `titel`, `beskrivning`, `omslagAlt`, `modellAlt`, `alt` och `bildtext`.
 6. **Skrivregler:** inga rubriker eller etiketter med enbart versaler, inga punktlistor i brödtexten, inga tankstreck. Skriv vardagligt och konkret.
 7. **Optimera media.** Finns `.glb` eller film, kör `npm run media <namn>`. Visa varningarna om storlek och trianglar för användaren. Är modellen för tung, föreslå att den förenklas i 3D-programmet innan den läggs in igen.

@@ -47,7 +47,7 @@ const ord = {
     sv: 'Alla bilder och modeller är skyddade av upphovsrätt. Text- och datautvinning är förbehållen enligt EU-direktiv 2019/790 artikel 4.',
     en: 'All images and models are protected by copyright. Text and data mining is reserved under EU Directive 2019/790, Article 4.',
   },
-  omRubrik: { sv: 'Om Victoria', en: 'About Victoria' },
+  omRubrik: { sv: 'Om Vicky', en: 'About Vicky' },
 } satisfies Record<string, Record<Sprak, string>>;
 
 export type OrdNyckel = keyof typeof ord;

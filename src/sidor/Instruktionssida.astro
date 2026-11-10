@@ -1,0 +1,21 @@
+---
+/**
+ * Instruktionen för att lägga till projekt, visad som en sida.
+ * Den länkas inte från sajten, indexeras inte och står inte i sitemap.
+ * Innehållet kommer från INSTRUKTION.md i repots rot, så det finns bara en text att hålla aktuell.
+ */
+import Ram from '../layouts/Ram.astro';
+import { Content } from '../../INSTRUKTION.md';
+import type { Sprak } from '../config/sajt';
+
+interface Props {
+  sprak: Sprak;
+}
+const { sprak } = Astro.props;
+---
+<Ram sprak={sprak} tema="start" titel="Så lägger du till ett projekt" beskrivning="Instruktion för att lägga till projekt på sajten." vag="/instruktion/" dold>
+  <div class="vs-berattelse vs-instruktion" lang="sv">
+    {sprak === 'en' && <p class="vs-notis" lang="en">This guide is only available in Swedish.</p>}
+    <Content />
+  </div>
+</Ram>

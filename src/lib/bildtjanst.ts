@@ -14,7 +14,7 @@ import sharp from 'sharp';
 
 const MAX_SIDA = 1800;
 const MIN_FOR_STAMPEL = 600;
-const UPPHOV = 'Victoria Wendelid, vickyvariety.com';
+const UPPHOV = 'Vicky Variety, vickyvariety.com';
 const FORBEHALL =
   'All rights reserved. Text and data mining, including AI training, is reserved under EU Directive 2019/790 Art. 4.';
 
