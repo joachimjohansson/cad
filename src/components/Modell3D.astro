@@ -209,7 +209,7 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
   const REDUCERAD_ROERELSE = '(prefers-reduced-motion: reduce)';
 
   // Avkodaren för meshopt-komprimerade modeller ligger på vår egen sajt (public/vendor), inte på en CDN.
-  const meshoptAvkodare = '/vendor/meshopt_decoder.js';
+  const meshoptAvkodare = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/vendor/meshopt_decoder.js`;
 
   let skriptLaddning: Promise<unknown> | undefined;
   /** Hämtar <model-viewer> först när den behövs. */

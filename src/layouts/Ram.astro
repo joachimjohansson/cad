@@ -13,7 +13,7 @@ import '../styles/bas.css';
 import '../styles/signatur.css';
 
 import { sajt, type Sprak, type Tema } from '../config/sajt';
-import { t, lank, andraSprak } from '../i18n/ord';
+import { t, lank, andraSprak, medBas } from '../i18n/ord';
 import MaskotDefs from '../components/MaskotDefs.astro';
 import Sidhuvud from '../components/Sidhuvud.astro';
 import Sidfot from '../components/Sidfot.astro';
@@ -34,6 +34,8 @@ const { sprak, tema, titel, beskrivning, vag, delningsbild } = Astro.props;
 const helTitel = titel === sajt.namn ? `${sajt.namn}, ${sajt.person}` : `${titel} | ${sajt.namn}`;
 const kanonisk = new URL(lank(sprak, vag), Astro.site);
 const annat = andraSprak(sprak);
+// Visningsversionen på GitHub Pages ska inte indexeras av sökmotorer.
+const demo = import.meta.env.BASE_URL !== '/';
 const temaFarg: Record<string, string> = {
   start: '#f5f4f8',
   industri: '#f2f5f7',
@@ -52,13 +54,13 @@ const temaFarg: Record<string, string> = {
     <link rel="alternate" hreflang={sprak} href={kanonisk} />
     <link rel="alternate" hreflang={annat} href={new URL(lank(annat, vag), Astro.site)} />
     <link rel="alternate" hreflang="x-default" href={new URL(lank('en', vag), Astro.site)} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={medBas('/favicon.svg')} type="image/svg+xml" />
     <meta name="theme-color" content={temaFarg[tema]} />
 
     <!-- Förbehåll mot text- och datautvinning och AI-träning -->
-    <meta name="robots" content="index, follow, noai, noimageai" />
+    <meta name="robots" content={demo ? 'noindex, nofollow, noai, noimageai' : 'index, follow, noai, noimageai'} />
     <meta name="tdm-reservation" content="1" />
-    <meta name="tdm-policy" content={new URL('/.well-known/tdm-policy.json', Astro.site)} />
+    <meta name="tdm-policy" content={new URL(medBas('/.well-known/tdm-policy.json'), Astro.site)} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={sajt.namn} />
