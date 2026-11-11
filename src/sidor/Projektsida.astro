@@ -47,7 +47,7 @@ const delning = await getImage({ src: projekt.omslag, width: 1200, format: 'jpg'
     <div class="vs-media">
       {
         projekt.modell ? (
-          <Modell3D modell={projekt.modell} sprak={sprak} />
+          <Modell3D modell={projekt.modell} sprak={sprak} industri={projekt.spar.tema === 'industri'} />
         ) : (
           <Image
             src={projekt.omslag}

@@ -15,8 +15,10 @@ import type { Projekt } from '../lib/projekt';
 interface Props {
   modell: NonNullable<Projekt['modell']>;
   sprak: Sprak;
+  /** Mörkgrå halvmetall mot ljus bakgrund, se src/lib/industriyta.mjs. */
+  industri?: boolean;
 }
-const { modell, sprak } = Astro.props;
+const { modell, sprak, industri = false } = Astro.props;
 
 const posterbild = await getImage({ src: modell.poster, width: 1600, format: 'webp' });
 const mbTal = modell.storlek / 1024 / 1024;
@@ -26,6 +28,7 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
 <div
   class="vs-modell"
   data-vs-modell
+  data-industri={industri ? '' : undefined}
   data-src={modell.src}
   data-poster={posterbild.src}
   data-alt={modell.alt[sprak]}
@@ -60,6 +63,10 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
     width: 100%;
     background: var(--yta-3);
     overflow: hidden;
+  }
+  /* Industrimodeller är alltid mörka mot ljust, även när sidan är i mörkt läge. */
+  .vs-modell[data-industri] {
+    background: #eef1f4;
   }
   @media (max-width: 600px) {
     .vs-modell {
@@ -205,6 +212,8 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
 </style>
 
 <script>
+  import { industriljus, industriyta } from '../lib/industriyta.mjs';
+
   const SMAL_SKARM = '(max-width: 700px)';
   const REDUCERAD_ROERELSE = '(prefers-reduced-motion: reduce)';
 
@@ -254,6 +263,8 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
         mv.setAttribute('reveal', 'auto');
         if (!matchMedia(REDUCERAD_ROERELSE).matches) mv.setAttribute('auto-rotate', '');
         if (matchMedia(REDUCERAD_ROERELSE).matches) mv.setAttribute('interaction-prompt', 'none');
+        const industri = rot.hasAttribute('data-industri');
+        if (industri) industriljus(mv);
 
         const framsteg = document.createElement('div');
         framsteg.className = 'vs-modell__framsteg';
@@ -275,6 +286,7 @@ const storlekText = sprak === 'sv' ? mb.replace('.', ',') : mb;
           framsteg.classList.toggle('vs-dold', detalj.totalProgress >= 1);
         });
         mv.addEventListener('load', () => {
+          if (industri) industriyta(mv);
           rot.dataset.lage = 'klar';
           if (status) status.remove();
           const hjalp = document.createElement('p');

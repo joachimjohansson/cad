@@ -48,18 +48,25 @@ const misslyckades = (text) => {
   console.error(`  FEL: ${text}`);
 };
 
-/** Läser de tre fälten vi behöver ur frontmatter, utan att dra in ett yaml-paket. */
+/** Läser de fält vi behöver ur frontmatter, utan att dra in ett yaml-paket. */
 function lasFrontmatter(fil) {
   const text = readFileSync(fil, 'utf8').replace(/\r\n/g, '\n');
   const traff = text.match(/^---\n([\s\S]*?)\n---/);
   const falt = {};
   if (!traff) return falt;
   for (const rad of traff[1].split('\n')) {
-    const m = rad.match(/^(modell|film|filmTyp):\s*(.*?)\s*$/);
+    const m = rad.match(/^(modell|film|filmTyp|spar):\s*(.*?)\s*$/);
     if (!m) continue;
     falt[m[1]] = m[2].replace(/\s+#.*$/, '').replace(/^["']|["']$/g, '');
   }
   return falt;
+}
+
+/** Vilket tema ett spår har, ur src/config/sajt.ts. Bara industritemat ändrar posterbilden. */
+function sparTema(slug) {
+  const sajt = readFileSync(join(rot, 'src', 'config', 'sajt.ts'), 'utf8');
+  const m = sajt.match(new RegExp(`slug:\\s*'${slug}',\\s*tema:\\s*'([a-z-]+)'`));
+  return m?.[1];
 }
 
 const basnamn = (fil) => fil.replace(/^\.\//, '').replace(/\.[^.]+$/, '');
@@ -151,7 +158,7 @@ async function hittaPlaywright() {
   }
 }
 
-async function skapaModellposter(glb, utfil) {
+async function skapaModellposter(glb, utfil, industri = false) {
   const playwright = await hittaPlaywright();
   if (!playwright) {
     throw new Error(
@@ -161,9 +168,11 @@ async function skapaModellposter(glb, utfil) {
   const mvSokvag = join(rot, 'node_modules', '@google', 'model-viewer', 'dist', 'model-viewer.min.js');
   if (!existsSync(mvSokvag)) throw new Error('Hittar inte @google/model-viewer i node_modules. Kör  npm install  först.');
 
-  const sida = `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#eef0f4}model-viewer{display:block;width:1600px;height:1200px;background:#eef0f4;--poster-color:#eef0f4}</style>
+  const sida = `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#eef1f4}model-viewer{display:block;width:1600px;height:1200px;background:#eef1f4;--poster-color:#eef1f4}</style>
 <script type="module">
   const { ModelViewerElement } = await import('/mv.js');
+  const { industriljus, industriyta } = await import('/yta.js');
+  const industri = ${industri};
   (ModelViewerElement ?? customElements.get('model-viewer')).meshoptDecoderLocation = '/meshopt_decoder.js';
   const mv = document.createElement('model-viewer');
   mv.id = 'm';
@@ -175,6 +184,10 @@ async function skapaModellposter(glb, utfil) {
   mv.setAttribute('interaction-prompt', 'none');
   mv.setAttribute('loading', 'eager');
   mv.setAttribute('reveal', 'auto');
+  if (industri) {
+    industriljus(mv);
+    mv.addEventListener('load', () => industriyta(mv), { once: true });
+  }
   document.body.append(mv);
   window.__klar = true;
 </script>`;
@@ -187,6 +200,9 @@ async function skapaModellposter(glb, utfil) {
     } else if (url === '/mv.js') {
       res.writeHead(200, { 'content-type': 'text/javascript' });
       res.end(readFileSync(mvSokvag));
+    } else if (url === '/yta.js') {
+      res.writeHead(200, { 'content-type': 'text/javascript' });
+      res.end(readFileSync(join(rot, 'src', 'lib', 'industriyta.mjs')));
     } else if (url === '/meshopt_decoder.js') {
       res.writeHead(200, { 'content-type': 'text/javascript' });
       res.end(readFileSync(join(rot, 'node_modules', 'meshoptimizer', 'meshopt_decoder.cjs')));
@@ -324,7 +340,7 @@ async function bearbetaProjekt(id) {
         if (eMb > MAX_MODELL_MB * 1024 * 1024) varna(`${id}/${namn}.glb är ${mb(eMb)} MB (över ${MAX_MODELL_MB} MB). Det kan bli för tungt för mobiler, särskilt iPhone.`);
         if (efter > MAX_TRIANGLAR) varna(`${id}/${namn}.glb har ${tusen(efter)} trianglar (över ${tusen(MAX_TRIANGLAR)}). Det kan bli för tungt för mobiler, särskilt iPhone.`);
         console.log('  Renderar posterbild ...');
-        await skapaModellposter(utfil, poster);
+        await skapaModellposter(utfil, poster, sparTema(fm.spar) === 'industri');
         console.log(`  Skrev ${poster.replace(rot + '/', '')}`);
         sammanfattning.modeller.push({ id, fil: `${namn}.glb`, fore: fMb, efter: eMb, triFore: fore, triEfter: efter });
       } catch (e) {
@@ -405,7 +421,12 @@ async function main() {
   console.log('Klart.');
 }
 
-main().catch((e) => {
-  console.error(`\nOväntat fel: ${e.stack ?? e.message}`);
-  process.exit(1);
-});
+// Postersteget kan importeras för sig, till exempel för att rendera om en poster utan att komprimera om modellen.
+export { skapaModellposter, sparTema };
+
+if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  main().catch((e) => {
+    console.error(`\nOväntat fel: ${e.stack ?? e.message}`);
+    process.exit(1);
+  });
+}
