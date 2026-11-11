@@ -4,10 +4,10 @@
  * Här bestäms vilka spår som finns, i vilken ordning de visas och vilka
  * kontaktvägar som syns. Lägg till, ta bort eller byt ordning på spår här,
  * ingen annan kod behöver ändras. Varje spår pekar på ett av de tre temana
- * (industri, spel eller kawaii). Två spår kan dela tema.
+ * (industri, spel eller whimsical). Två spår kan dela tema.
  */
 
-export type Tema = 'industri' | 'spel' | 'kawaii';
+export type Tema = 'industri' | 'spel' | 'whimsical';
 export type Sprak = 'en' | 'sv';
 export type Text = Record<Sprak, string>;
 
@@ -51,9 +51,9 @@ export const spar: Spar[] = [
     },
   },
   {
-    slug: 'kawaii',
-    tema: 'kawaii',
-    namn: { sv: 'Kawaii', en: 'Kawaii' },
+    slug: 'whimsical',
+    tema: 'whimsical',
+    namn: { sv: 'Whimsical', en: 'Whimsical' },
     beskrivning: {
       sv: 'Små gulliga illustrationer och berättelser',
       en: 'Small cute illustrations and stories',

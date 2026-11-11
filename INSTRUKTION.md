@@ -168,7 +168,7 @@ Saknas ett fält eller är något felstavat visar förhandsgranskningen ett medd
 ```text
 [InvalidContentEntryDataError] projekt → raven-i-snon data does not match collection schema.
 
-  spar: Spåret "spell" finns inte. Välj ett av "industri", "spel", "kawaii". Spåren ändras i src/config/sajt.ts.
+  spar: Spåret "spell" finns inte. Välj ett av "industri", "spel", "whimsical". Spåren ändras i src/config/sajt.ts.
   omslagAlt: Fältet "omslagAlt" saknas. Lägg till en rad som till exempel:  omslagAlt: Ventilhuset i genomskärning med flödet markerat i rött.
 ```
 
@@ -202,7 +202,7 @@ Vill du dölja ett projekt utan att ta bort det skriver du `utkast: true`. Då s
 
 `titel`, `spar`, `ar`, `beskrivning`, `omslag` och `omslagAlt` måste finnas. Resten är valfritt.
 
-`spar` är spåret projektet hör till. Det måste vara ett av spåren i `src/config/sajt.ts`, just nu `industri`, `spel` eller `kawaii`.
+`spar` är spåret projektet hör till. Det måste vara ett av spåren i `src/config/sajt.ts`, just nu `industri`, `spel` eller `whimsical`.
 
 `ar` skrivs som en siffra utan citattecken.
 

@@ -1,6 +1,6 @@
 ---
 titel: "Lilla kaktusen"
-spar: kawaii
+spar: whimsical
 ar: 2024
 beskrivning: "En leende kaktus i en orange kruka som först hade en rosa blomma och sedan fick stå utan den."
 omslag: omslag.jpg

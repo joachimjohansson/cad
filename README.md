@@ -42,4 +42,4 @@ npm run dev
 
 ## Temasystemet
 
-All struktur är gemensam. Ett spår är ett tema som sätts med `data-spar` på `<html>` och bara byter design-tokens: färg, typsnitt, hörnradie, linjer och rörelse. Varje tema har ett signaturelement. För Industri är det måttlinjer och rutnät, för Spel glöd och klippta kanter och för Kawaii handritade understrykningar och blobbar. Byte mellan spår animeras med View Transitions i webbläsare som stöder det.
+All struktur är gemensam. Ett spår är ett tema som sätts med `data-spar` på `<html>` och bara byter design-tokens: färg, typsnitt, hörnradie, linjer och rörelse. Varje tema har ett signaturelement. För Industri är det måttlinjer och rutnät, för Spel glöd och klippta kanter och för Whimsical handritade understrykningar och blobbar. Byte mellan spår animeras med View Transitions i webbläsare som stöder det.

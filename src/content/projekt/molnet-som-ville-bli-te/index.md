@@ -1,6 +1,6 @@
 ---
 titel: "Molnet som ville bli te"
-spar: kawaii
+spar: whimsical
 ar: 2025
 beskrivning: "Ett litet glatt moln som helst vill sitta hemma i en mintgrön tekopp, i tre stämningar för klistermärken och kort."
 omslag: omslag.jpg

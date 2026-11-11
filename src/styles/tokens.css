@@ -151,23 +151,23 @@
   color-scheme: dark;
 }
 
-/* Kawaii: pastell, runda former, handskrivna accenter */
-[data-spar='kawaii'] {
-  --yta: #fff1f5;
-  --yta-2: #ffffff;
-  --yta-3: #ffe4ec;
-  --text: #3d1f2c;
-  --text-svag: #7a4a5c;
-  /* Accenten används till former. Text i accentfärg använder --accent-text. */
-  --accent: #e24c82;
-  --accent-text: #b02a5e;
-  --linje: #f6cfdc;
-  --linje-stark: #d98aa6;
+/* Whimsical: pastellgult, ljusbrunt och ljusgrönt, runda former, handskrivna accenter */
+[data-spar='whimsical'] {
+  --yta: #fff8e1;
+  --yta-2: #fffdf6;
+  --yta-3: #f6ebcb;
+  --text: #3b2e1e;
+  --text-svag: #6b5a44;
+  /* Accenten används till former och fokusramar (minst 3:1). Text i accentfärg använder --accent-text. */
+  --accent: #5c9147;
+  --accent-text: #3f6b2e;
+  --linje: #eadbb4;
+  --linje-stark: #a88a60;
   --rutnat: transparent;
   --glod: transparent;
   --glod-2: transparent;
-  --blob: #ffd3e1;
-  --chip: #ffe4ec;
+  --blob: #dcebc8;
+  --chip: #f1e3c2;
   --rubrik-font: 'Fredoka Variable', 'Fredoka', ui-rounded, var(--brod-font);
   --rubrik-vikt: 600;
   --rubrik-bredd: 100%;
@@ -178,14 +178,14 @@
   --rorelse: 360ms;
   --kurva: cubic-bezier(0.34, 1.56, 0.64, 1);
   --hover-figur: translateY(-6px) rotate(-4deg);
-  --fig-topp: #ffe6ee;
-  --fig-v: #ffc6d7;
-  --fig-h: #ffdce6;
-  --fig-linje: #3d1f2c;
+  --fig-topp: #fff1bf;
+  --fig-v: #e3cba8;
+  --fig-h: #cfe5b8;
+  --fig-linje: #3b2e1e;
   --fig-sw: 3;
-  --fig-oga: #3d1f2c;
-  --kind: #ff7fa8;
-  --kind-op: 0.8;
+  --fig-oga: #3b2e1e;
+  --kind: #e9a87c;
+  --kind-op: 0.75;
   --axel-op: 0;
   color-scheme: light;
 }
@@ -230,23 +230,24 @@
     --fig-oga: #d4e6f8;
     color-scheme: dark;
   }
-  [data-spar='kawaii'] {
-    --yta: #26151d;
-    --yta-2: #34202a;
-    --yta-3: #2e1b24;
-    --text: #ffe8f0;
-    --text-svag: #e3b3c6;
-    --accent: #ff8db5;
-    --accent-text: #ff9ec0;
-    --linje: #553242;
-    --linje-stark: #a56a82;
-    --blob: #4a2533;
-    --chip: #432330;
-    --fig-topp: #ffd9e5;
-    --fig-v: #f7a9c2;
-    --fig-h: #ffc4d6;
-    --fig-linje: #26151d;
-    --fig-oga: #26151d;
+  /* Whimsical blir en varm kvällsvariant: mörkbrunt med pastellerna kvar i figur och accent */
+  [data-spar='whimsical'] {
+    --yta: #221b12;
+    --yta-2: #2e251a;
+    --yta-3: #282015;
+    --text: #fbf3dc;
+    --text-svag: #d9c9a6;
+    --accent: #b5d99c;
+    --accent-text: #c4e3ae;
+    --linje: #4a3d2b;
+    --linje-stark: #9c8564;
+    --blob: #33402a;
+    --chip: #3a2f20;
+    --fig-topp: #fff1bf;
+    --fig-v: #e3cba8;
+    --fig-h: #cfe5b8;
+    --fig-linje: #221b12;
+    --fig-oga: #221b12;
     color-scheme: dark;
   }
 }

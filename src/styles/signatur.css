@@ -2,7 +2,7 @@
   Signaturelement. Ett per tema, bara CSS, ingen egen markup.
   Industri: måttlinjer och rutnät.
   Spel: glöd och sneda klippta kanter.
-  Kawaii: handritade understrykningar och mjuka blobbar.
+  Whimsical: handritade understrykningar och mjuka blobbar.
 */
 
 .vs-kort__bild::before,
@@ -133,12 +133,12 @@
   text-shadow: 0 0 24px var(--glod);
 }
 
-/* Kawaii */
-[data-spar='kawaii'] .vs-kort__bild {
+/* Whimsical */
+[data-spar='whimsical'] .vs-kort__bild {
   background: transparent;
 }
-[data-spar='kawaii'] .vs-kort__bild::before,
-[data-spar='kawaii'].vs-dorr::before {
+[data-spar='whimsical'] .vs-kort__bild::before,
+[data-spar='whimsical'].vs-dorr::before {
   content: '';
   position: absolute;
   z-index: -1;
@@ -146,23 +146,23 @@
   background: var(--blob);
   border-radius: 46% 54% 60% 40% / 52% 42% 58% 48%;
 }
-[data-spar='kawaii'] .vs-kort__bild img {
+[data-spar='whimsical'] .vs-kort__bild img {
   border-radius: var(--radie-liten);
 }
-[data-spar='kawaii'] .vs-kort__bild:has(img)::before {
+[data-spar='whimsical'] .vs-kort__bild:has(img)::before {
   inset: -6% -4% auto auto;
   width: 40%;
   aspect-ratio: 1;
 }
-[data-spar='kawaii'].vs-dorr::before {
+[data-spar='whimsical'].vs-dorr::before {
   inset: 22px 14% auto;
   height: 52%;
 }
-[data-spar='kawaii'].vs-dorr {
+[data-spar='whimsical'].vs-dorr {
   border-color: var(--linje-stark);
 }
-[data-spar='kawaii'] .vs-markerad::after,
-[data-spar='kawaii'] .vs-kort__titel::after {
+[data-spar='whimsical'] .vs-markerad::after,
+[data-spar='whimsical'] .vs-kort__titel::after {
   content: '';
   display: block;
   width: min(6.5em, 100%);
@@ -175,13 +175,13 @@
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12'%3E%3Cpath d='M2 8c12-6 22 4 34-1s22-5 32 0 26 3 50-3' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")
     left / 100% 100% no-repeat;
 }
-[data-spar='kawaii'] .vs-kort__titel::after {
+[data-spar='whimsical'] .vs-kort__titel::after {
   height: 10px;
   width: 4.5em;
 }
-[data-spar='kawaii'] .vs-meta dt {
+[data-spar='whimsical'] .vs-meta dt {
   font-size: 1rem;
 }
-[data-spar='kawaii'] .vs-media {
+[data-spar='whimsical'] .vs-media {
   border-radius: var(--radie);
 }
